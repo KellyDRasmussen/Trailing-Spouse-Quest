@@ -128,3 +128,27 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Twine project files (optional)
+*.tw2
+*.twsave
+
+# Build/output folders if using tweego later
+build/
+dist/
+
+# Node modules if using npm packages
+node_modules/
+
+# Temp/log files
+*.log
+*.tmp
+
+# IDE junk
+.vscode/
+.idea/
+
