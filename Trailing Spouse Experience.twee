@@ -1,0 +1,768 @@
+:: StoryTitle
+Trailing Spouse Experience
+
+
+:: StoryData
+{
+  "ifid": "ED99C4B6-BE1A-4F72-9D0A-56B1BD9F1894",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Arrival",
+  "zoom": 0.6
+}
+
+
+:: Arrival {"position":"700,100","size":"100,100"}
+You arrive in Denmark with your family. Things are so nice here! 
+
+You are filling in your immigration paperwork.
+
+Navn. That's got to be "Name", right?
+
+[[Sywia Piwka|Choice_Sywia]]
+[[Nina Ahmed|Choice_Nina]]
+[[Olivia Jensen|Choice_Olivia]]
+
+
+
+
+:: BuJo_Regular {"position":"1100,600","size":"100,100"}
+<<if $firstmonth==false>>
+<h3>Reflections</h3><<include "BujoReflections">>
+<hr>
+<</if>>
+<h3>Plans</h3><<include "BujoPlans">>
+<hr>
+<h3>Opportunities</h3><<include "BujoOpportunities">>
+<hr>
+[[Close the book->KitchenTable]]
+
+
+
+
+:: BujoOpportunities {"position":"1000,700","size":"100,100"}
+<<if $bujoOpportunities.length > 0>>
+<<for _opp range $bujoOpportunities>>
+<<set _alreadyPlanned = $bujoPlans.some(p => p.id == _opp.id)>>
+<<=_opp.label>><br>
+<<if !_alreadyPlanned and $timeBucket < 1.0>>
+<<link "Commit to this">>
+  <<set $bujoPlans.push(_opp)>>
+  <<set $timeBucket += _opp.timeCost>>
+  <<goto "BuJo_Regular">>
+  <<if $timeBucket >= 1.0>>
+    <<set $advance=true>>
+  <</if>>
+<</link>>
+<</if>>
+
+<</for>>
+
+<</if>>
+
+
+
+:: BujoPlans {"position":"1100,700","size":"100,100"}
+<<if $application_state == "">><p><em>A brand new Bullet Journal. So much potential in these pages!</em></p><</if>>
+<<if $changedmind>><p><em>You have erased some plans carefully. Only a forensics expert could see your previous spread.</em></p><</if>>
+<<if $application_state == "ft">><p><em>Your BuJo is jacked to the brim with goals and targets. GET A JOB you have underlined five times.</em></p><</if>>
+<<if $application_state == "pt">><p><em>You’ve drawn out a little calendar spread to track your applications.</em></p><</if>>
+<<if $application_state == "vpt">><p><em>You have written "Apply for a job every week" and drawn a picture of you typing on a laptop giving a thumbs up.</em></p><</if>>
+<<if $application_state == "nope">><p><em>You have written Goals: Survive and drawn a little doodle of Katniss Everdeen 🏹</em></p>
+<</if>>
+<<if $bujoPlans.length > 0>>
+<h3> Month Events:-</h3>
+  <<for _plan range $bujoPlans>>
+    <p><strong><<=_plan.label>></strong><br></p>
+    <</for>>
+<<else>>
+  <p><em>Month Events:</em></p>
+<</if>>
+<<if $advance==true>>
+You won't be able to fit much else in this month. 
+<<set $firstmonth=false>>
+<</if>>
+
+
+:: BujoReflections {"position":"900,700","size":"100,100"}
+Placeholder
+
+
+:: Choice_Nina {"position":"700,300","size":"100,100"}
+Great. One question down. Two more pages to go.
+<<silently>>
+<<set $luck to 0.1>>
+<<set $playername = "Nina Ahmed">>
+<<set $firstname = "Nina">>
+<<set $nickname = "Neens">>
+<<set $momnickname = "Nounou">>
+<</silently>>
+[[Finish this off later->KitchenTable]]
+
+
+:: Choice_Olivia {"position":"900,300","size":"100,100"}
+Great. One question down. Two more pages to go.
+<<silently>>
+<<set $luck to 0.5>>
+<<set $playername = "Olivia Jensen">>
+<<set $firstname = "Olivia">>
+<<set $nickname = "Liv">>
+<<set $momnickname = "Livvy-Lou">>
+<</silently>>
+[[Finish this off later->KitchenTable]]
+
+
+:: Choice_Sywia {"position":"500,300","size":"100,100"}
+Great. One question down. Two more pages to go.  
+<<silently>>
+<<set $luck to 0.2>>
+<<set $playername = "Sywia Piwka">>
+<<set $firstname = "Sylwia">>
+<<set $nickname = "Sylwuś">>
+<<set $momnickname = "Sylunia">>
+<</silently>>
+[[Finish this off later->KitchenTable]]
+
+
+:: Email {"position":"2100,1000","size":"100,100"}
+<<set _inbox = setup.inbox.filter(e => !e.showIf || e.showIf())>>
+
+<<if _inbox.length == 0>>
+  <p><em>Inbox zero. Ahhhh.</em></p>
+<</if>>
+
+<<if _inbox.length > 0>>
+  <<for _email range _inbox>>
+    <div class="message-card email">
+      <div class="email-header">
+        <strong>From:</strong> <<=_email.sender>><br>
+        <strong>Subject:</strong> <<=_email.subject>>
+      </div>
+      <div class="message-body">
+        <<print _email.body.replace("{{playername}}", $playername)>>
+        
+      </div>
+    </div>
+
+    <<if _email.linkedOpportunityId>>
+      <<set _opp = $allOpportunities.find(o => o.id == _email.linkedOpportunityId)>>
+      <<if _opp>>
+        <<if _opp.forced and !$bujoPlans.includes(_opp)>>
+          <<set $bujoPlans.push(_opp)>>
+          <<set $timeBucket += _opp.timeCost>>
+        <<elseif !$bujoOpportunities.includes(_opp)>>
+          <<set $bujoOpportunities.push(_opp)>>
+        <</if>>
+      <</if>>
+    <</if>>
+
+  <</for>>
+<</if>>
+
+[[Close the mail program ->Laptop]]
+
+
+
+:: First_BuJo {"position":"1100,400","size":"100,100"}
+<<silently>><<if $socialMediaInitialised==false>>
+  <<include "_SoMe_init">> 
+  <<set setup.instaFeed = setup.allSocialPosts>>
+  <<set $socialMediaInitialised = true>>
+<</if>>
+<<include "_email_init">>
+<</silently>>
+A brand new bullet journal. The possibilities are endless.
+
+GroupChat pings. Your life coach is checking in, as requested.  
+<div class="chat-bubble">
+
+Jen:
+
+<<= $firstname>>, don’t commit your energy to things immediately 💫 
+Write invitations down 📝 then choose 🌱.  
+
+</div>
+<<set $newbujo=1>>
+[[Close the book->KitchenTable]]
+
+
+
+:: GroupChat {"position":"600,900","size":"100,100"}
+<<for _i to 0; _i < $groupMessages.length; _i++>>
+  <<set _msg = $groupMessages[_i]>>
+  <div class="chat-bubble">
+    <strong><<print _msg.sender>>:</strong> <<print _msg.content>>
+  </div>
+<</for>>
+
+
+<<if $newbujo==1>>
+<div class="chat-bubble">
+<strong>
+Jen:
+
+<<= $firstname>>, don’t commit your energy to things immediately 💫 
+Write invitations down 📝 then choose 🌱.  
+</strong>
+</div>
+<</if>>
+[[Back to home screen ->Phone]] 
+
+
+
+:: Intra {"position":"300,700","size":"100,100"}
+
+
+
+:: JobBoard {"position":"1600,800","size":"100,100"}
+<<set _jobOptions = [
+  {label: "More than one a day", id: "ft", time: 0.7, luck: 0, text: "Alright, let's update the old BuJo"},
+  {label: "A couple a week", id: "pt", time: 0.3, luck: 0.2, text: "I'll block off some time in the BuJo"},
+  {label: "One a week", id: "vpt", time: 0.1, luck: 0.2, text: "I'll make a plan in the BuJo"},
+  {label: "Not this month", id: "nope", time: 0, luck: 0.5, text: "Gonna write that down in the BuJo"}
+]>>
+
+<p>How many job applications will you send out?</p>
+
+<<set _i = 0>>
+<<for _opt range _jobOptions>>
+  [[<<=_opt.label>>->JobConfirm][$jobPickIndex = <<=_i>>]]
+  <<set _i += 1>>
+<</for>>
+
+
+
+:: JobConfirm {"position":"1500,800","size":"100,100"}
+<<set _opt = [
+  {label: "More than one a day", id: "ft", time: 0.7, luck: 0, text: "Alright, let's update the old BuJo"},
+  {label: "A couple a week", id: "pt", time: 0.3, luck: 0.2, text: "I'll block off some time in the BuJo"},
+  {label: "One a week", id: "vpt", time: 0.1, luck: 0.2, text: "I'll make a plan in the BuJo"},
+  {label: "Not this month", id: "nope", time: 0, luck: 0.5, text: "Gonna write that down in the BuJo"}
+][$jobPickIndex]>>
+
+<<run setup.jobhuntSelect(_opt.id, _opt.time, _opt.luck, _opt.text)>>
+
+<p><<print _opt.text>></p>
+
+[[Back to BuJo->BuJo_Regular]]
+
+
+
+:: KitchenTable {"position":"600,500","size":"100,100"}
+<<silently>>
+  <<include "_groupchat_init">>
+<</silently>>
+<<if $introSeen == false>>
+  You pack your kids off to school and your partner off to work. You sit down at your kitchen table and set up your workspace.
+
+  You have a laptop, a mobile phone and your brand new bullet journal.
+  <<set $introSeen = true>>
+<</if>>
+<<if $advance>>
+  <<run setup.resetMonth()>>
+<</if>>
+- [[Open the laptop->Laptop]]
+- [[Check your phone->Phone]]
+<<if $newbujo == 0>>- [[Open your journal->First_BuJo]]<</if>>
+<<if $newbujo == 1>>- [[Open your journal->BuJo_Regular]]<</if>>
+
+
+
+:: Laptop {"position":"2100,700","size":"100,100"}
+<<if !$socialMediaInitialised>>
+[[Email ->Email]]
+[[That's enough internet for now->KitchenTable]]
+<<elseif $firstmonth>>
+[[Job hunting times ->JobBoard]]
+[[Email ->Email]]
+[[That's enough internet for now->KitchenTable]]
+<<else>>
+[[Job hunting times ->JobBoard]]
+[[Just check my email real quick ->Email]]
+[[That's enough internet for now->KitchenTable]]
+<</if>>
+
+
+
+:: Phone {"position":"600,700","size":"100,100"}
+<<if $firstmonth=true>>
+Let's see what's going on with your friends and family.
+[[What's new in the feeds? ->SoMe]]
+[[Check in on the groupchats ->GroupChat]]
+[[Put phone down->KitchenTable]]
+<<elseif $firstmonth=false>>
+Let's see what's going on outside in the real world.
+[[See how the kids' teachers are doing -->Intra]]
+[[What's new in the feeds? ->SoMe]]
+[[Check in on the groupchats ->GroupChat]]
+[[Put phone down->KitchenTable]]
+<</if>>
+
+
+
+:: SoMe {"position":"400,800","size":"100,100"}
+<<if !setup.allSocialPosts>>
+  <p>Your family is having a lovely get together at your auntie's house. You click through the photos. You have a look at what your best friend is up to. She's having a nice holiday.</p>
+
+  <p>Your post of your children standing in front of the door on their way to their first day of school has received 15 internet points.</p>
+
+  [[Back->Phone]]
+
+<<else>>
+<<silently>>
+  <<if !setup.instaFeedInitialised>>
+    <<set setup.instaFeed = setup.allSocialPosts.filter(p => p.tags.includes("august"))>>
+    <<set setup.instaFeedIndex = 0>>
+    <<set setup.instaFeedInitialised = true>>
+  <</if>>
+
+  <<set _post = setup.instaFeed[setup.instaFeedIndex]>>
+
+<<if _post.tags.includes("opportunity") and !_post.seen>>
+  <<set _opp = $allOpportunities.find(o => o.linkId == _post.linkId)>>
+  <<if _opp and !$bujoOpportunities.includes(_opp)>>
+    <<set $bujoOpportunities.push(_opp)>>
+  <</if>>
+  <<set _post.seen = true>>
+<</if>>
+<</silently>>
+  <div class="message-card social">
+    <div class="social-post">
+      <strong>@<<=_post.author>></strong>
+    </div>
+    <div class="message-body"><<=_post.caption>></div>
+  </div>
+
+  <<link "Next Post">>
+    <<set setup.instaFeedIndex = (setup.instaFeedIndex + 1) % setup.instaFeed.length>>
+    <<goto "SoMe">>
+  <</link>>
+
+  [[Back to home screen->Phone]]
+
+<</if>>
+
+
+
+:: StoryHeader {"position":"100,100","size":"100,100"}
+<link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+
+
+
+:: StoryInit {"position":"100,0","size":"100,100"}
+<<set $cashFlow = 0.5>>
+<<set $momnickname = "honey">>
+<<set $connectedness = 0>>
+<<set $purpose = 0>>
+<<set $leisure = 0>>
+<<set $boundaries = 0>>
+<<set $introSeen = false>>
+<<set $appsSent = 0>>
+<<set $emailList = []>>
+<<set $unreadEmails = 0>>
+<<set $groupMessages = []>>
+<<set $unreadWhatsApp = 0>>
+<<set $activities = false>>
+<<set $firstmonth = true>>
+<<set $application_state ="">>
+<<set $newbujo=0>>
+<<set $mummessage=true>>
+<<set $socialMediaInitialised=false>>
+<<set $advance=false>>
+
+<<set $StoryInitHasRun = true>>
+
+<<set $bujoOpportunities = []>>
+<<set $bujoPlans = []>>
+<<set $timeBucket = 0>>
+
+<<set $allOpportunities = [
+
+  {
+    id: "oppo_networking_01",
+    linkId: "networking_01",
+    label: "Go to coffee club",
+    timeCost: 0.1,
+    prose: "An informal coffee meetup.",
+    tags: ["august", "opportunity"]
+  },
+
+  {
+    id: "oppo_course_01",
+    linkId: "course_01",
+    label: "Sign up for course",
+    timeCost: 0.1,
+    prose: "A course with a certificate at the end",
+    tags: ["august", "opportunity"]
+  },
+
+  {
+    id: "oppo_bureaucracy_01",
+    linkId: "bureaucracy_01",
+    label: "Get an appointment at SIRI for the whole family",
+    timeCost: 0.1,
+    prose: "",
+    tags: ["email", "opportunity"],
+    forced: true
+  },
+  {
+	id: "oppo_dansk_01",
+    linkId: "dansk_01",
+    label: "Sprogtest? Like... what? A language test??",
+    timeCost: 0.1,
+    prose: "Sounds like I need to have my Danish assessed. That should be quick.",
+    tags : ["email", "opportunity"]
+}
+
+]>>
+
+
+
+
+
+:: _SoMe_init {"position":"500,800","size":"100,100"}
+<<set setup.allSocialPosts = [
+
+  {
+    id: "insta_kidscute_01",
+    linkId: "kidscute_01",
+    author: "sister_life",
+    caption: "I love my waterbabies 🌊☀️ #BeachLife",
+    tags: ["family", "comparison", "august"]
+  },
+
+  {
+    id: "insta_danceparty_01",
+    linkId: "danceparty_01",
+    author: "Life_oh_Life",
+    caption: "5-min dance party. Starts now!",
+    tags: ["nervous_system", "relief", "august"],
+    relief: true
+  },
+
+  {
+    id: "insta_networking_event_01",
+    linkId: "networking_01",
+    author: "international_hub",
+    caption: "Join us for the best Coffee Club in town (every Friday☕️)",
+    tags: ["opportunity", "networking", "august"],
+    luckBoost: 0.2
+  },
+
+  {
+    id: "insta_course_ux_01",
+    linkId: "course_01",
+    author: "Flourish_DK",
+    caption: "Want to break into the Danish labour market? Free places available.",
+    tags: ["opportunity", "course", "august"],
+    luckBoost: 0.3
+  },
+
+  {
+    id: "insta_smugfriend_01",
+    linkId: "smugfriend_01",
+    author: "viking_life_forever",
+    caption: "When you can't remember if you emailed in Danish or English to your colleagues and they actually understood you 🥹💼 #dansk",
+    tags: ["comparison", "language", "august"]
+  },
+
+  {
+    id: "insta_algoadvice_01",
+    linkId: "algoadvice_01",
+    author: "mindset_guru",
+    caption: "✨If you don't like your life you should change it. Happiness is a CHOICE",
+    tags: ["shamebait",  "august"]
+  }
+
+]>>
+
+
+
+
+:: _email_init {"position":"2200,1000","size":"100,100"}
+<<set setup.inbox = [
+  {
+    id: "email_relo_coach_01",
+    sender: "Settling In Service",
+    subject: "Important First Steps for Internationals",
+body: "Hey {{playername}}, remember that you must make appointments for the whole family to have your fingerprints taken at the Citizens Center.\nAll the best, \nJulie",
+    linkedOpportunityId: "oppo_bureaucracy_01",
+    month: 1,
+    tags: ["settling", "bureaucracy", "august"],
+    forced: true
+  },
+  {
+    id: "email_danish_school_01",
+    sender: "Sprogskole",
+    subject: "Tilmeld dig til dansk undervisning",
+body: "Hej {{playername}}, velkom til Danmark! Vi kan tilbyde dig en sprogtest og bagefter placerere dig i en tilpasset klasse.\nVi ses på tirsdag kl 17:00\nMvh,\nNy i Danmark Hold",
+    linkedOpportunityId: "oppo_dansk_01",
+    month: 1,
+    tags: ["settling", "danish", "august"],
+    luckBoost: 0.1,
+    danishBoost: 0.2
+  }
+]>>
+
+
+
+:: _groupchat_init {"position":"700,900","size":"100,100"}
+<<if $mummessage==true>>
+ <<set _msgText = "Hey " + ($momnickname) + ", hope it all went well with the kids' first day. They looked so happy in the picture. I'll call you at the weekend.">>
+<<addGroupMessage "Mom" _msgText>>
+<<set $mummessage=false>>
+<</if>>
+
+
+:: StoryScript [script]
+// Reset Month Helper
+setup.resetMonth = function () {
+  State.variables.month += 1;
+  State.variables.timeBucket = 0;
+  State.variables.advance = false;
+  State.variables.bujoPlans = [];
+  State.variables.bujoOpportunities = [];
+  State.variables.kidsPickedUp = false;
+  State.variables.changedmind = false;
+  State.variables.application_state = "";
+  State.variables.newMonthStarted = true;
+};
+
+
+// 🟢 Group Chat Message Macro
+Macro.add('addGroupMessage', {
+  handler: function () {
+    if (this.args.length < 2) {
+      return this.error("Expected: sender, content [optional: timestamp]");
+    }
+    const sender = this.args[0];
+    const content = this.args[1];
+
+    if (!Array.isArray(State.variables.groupMessages)) {
+      State.variables.groupMessages = [];
+    }
+
+    State.variables.groupMessages.push({
+      sender: sender,
+      content: content,
+      seen: false
+    });
+  }
+});
+
+// 🟢 Initialize empty structures — content gets injected from passages
+setup.inbox = [];       // Email + system messages go here
+setup.instaFeed = [];   // Instagram-like posts go here
+
+// 🟢 Filter helper — get messages by month (if you want to use months)
+setup.getMessagesForMonth = function(month) {
+  return setup.inbox.filter(msg => msg.month === month);
+};
+
+// 🟢  helper to add opportunity IDs to BuJo invites
+setup.addOpportunity = function(id) {
+  const opp = State.variables.allOpportunities.find(o => o.id === id);
+  if (!opp) return;
+
+  if (!State.variables.bujoOpportunities) {
+    State.variables.bujoOpportunities = [];
+  }
+
+  const alreadyExists = State.variables.bujoOpportunities.some(p => p.id === opp.id);
+  if (!alreadyExists) {
+    State.variables.bujoOpportunities.push(opp);
+  }
+};
+
+
+
+
+// 🟢  low-buff relief check
+setup.shouldInjectRelief = function() {
+  const buffs = (State.variables.connectedness || 0) + (State.variables.leisure || 0);
+  return buffs < 2;
+};
+
+// job hunting
+
+setup.jobhuntSelect = function(id, time, luck, text) {
+    const v = State.variables;
+
+    const prev = v.application_state;
+    if (prev !== "" && prev !== id) {
+        v.changedmind = true;
+    }
+
+    if (!v.changedmind && luck > 0) {
+        v.luck += luck;
+    }
+
+    v.application_state = id;
+    v.activities = true;
+    v.selectedJobTime = time;
+    v.jobMessage = text;
+
+    v.timeLog = v.timeLog || {};
+    if (v.timeLog["jobhunt"]) {
+        v.provisionalTime -= v.timeLog["jobhunt"];
+        delete v.timeLog["jobhunt"];
+    }
+
+    if (time > 0) {
+        v.timeLog["jobhunt"] = time;
+        v.provisionalTime += time;
+    }
+
+    Engine.play("JobConfirm");
+};
+
+
+:: StoryStylesheet [stylesheet]
+.chat-bubble {
+  background-color: #8CA0B0;
+  color: #000000;
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  max-width: 75%;
+  line-height: 1.4;
+  font-size: 0.95em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.message-card {
+  border: 1px solid #ccc;
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: 5px;
+  font-family: system-ui, sans-serif;
+    color: #000000;
+}
+
+.email {
+  background-color: #f9f9ff;
+  border-left: 4px solid #5555cc;
+  color: #000000;
+}
+
+.social {
+  background-color: #f0fdf0;
+  border-left: 4px solid #44aa44;
+  color: #000000;
+}
+
+.email-header {
+  font-size: 0.9em;
+  color: #333;
+  margin-bottom: 0.5em;
+}
+
+.social-post {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.message-body {
+  white-space: pre-wrap;
+    color: #000000;
+}
+
+.insta-post {
+  background-color: #fff;
+  color: #000000;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 16px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  max-width: 500px;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+.insta-author {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.insta-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.insta-caption {
+  font-size: 0.95em;
+  line-height: 1.4;
+  color: #444;
+}
+
+.bujo-page {
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  padding: 1.2em;
+  margin: 2em 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.bujo-page h3 {
+  font-family: 'Georgia', serif;
+  font-size: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+.bujo-meta {
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+.bujo-reflections {
+  margin-top: 1em;
+  font-style: italic;
+  color: #444;
+}
+/* Fade-in animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-card.social {
+  opacity: 0; /* start hidden until timed macro triggers */
+  animation: fadeInUp 0.5s ease forwards;
+  margin: 1em 0;
+  padding: 1em;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-family: system-ui, sans-serif;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.social-post {
+  font-weight: bold;
+  margin-bottom: 0.25em;
+  color: #555;
+}
+
+.message-body {
+  font-size: 0.95em;
+  color: #333;
+  line-height: 1.4;
+}
