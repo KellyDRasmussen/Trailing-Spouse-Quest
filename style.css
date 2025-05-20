@@ -1,0 +1,148 @@
+.chat-bubble {
+  background-color: #8CA0B0;
+  color: #000000;
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  max-width: 75%;
+  line-height: 1.4;
+  font-size: 0.95em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.message-card {
+  border: 1px solid #ccc;
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: 5px;
+  font-family: system-ui, sans-serif;
+    color: #000000;
+}
+
+.email {
+  background-color: #f9f9ff;
+  border-left: 4px solid #5555cc;
+  color: #000000;
+}
+
+.social {
+  background-color: #f0fdf0;
+  border-left: 4px solid #44aa44;
+  color: #000000;
+}
+
+.email-header {
+  font-size: 0.9em;
+  color: #333;
+  margin-bottom: 0.5em;
+}
+
+.social-post {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.message-body {
+  white-space: pre-wrap;
+    color: #000000;
+}
+
+.insta-post {
+  background-color: #fff;
+  color: #000000;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 16px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  max-width: 500px;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+.insta-author {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.insta-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.insta-caption {
+  font-size: 0.95em;
+  line-height: 1.4;
+  color: #444;
+}
+
+.bujo-page {
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  padding: 1.2em;
+  margin: 2em 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.bujo-page h3 {
+  font-family: 'Georgia', serif;
+  font-size: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+.bujo-meta {
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+.bujo-reflections {
+  margin-top: 1em;
+  font-style: italic;
+  color: #444;
+}
+/* Fade-in animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-card.social {
+  opacity: 0; /* start hidden until timed macro triggers */
+  animation: fadeInUp 0.5s ease forwards;
+  margin: 1em 0;
+  padding: 1em;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-family: system-ui, sans-serif;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.social-post {
+  font-weight: bold;
+  margin-bottom: 0.25em;
+  color: #555;
+}
+
+.message-body {
+  font-size: 0.95em;
+  color: #333;
+  line-height: 1.4;
+}
