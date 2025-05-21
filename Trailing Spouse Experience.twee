@@ -42,34 +42,23 @@ Navn. That's got to be "Name", right?
 
 :: BujoOpportunities {"position":"1000,700","size":"100,100"}
 <<if $bujoOpportunities.length > 0>>
-<<for _opp range $bujoOpportunities>>
-<<set _alreadyPlanned = $bujoPlans.some(p => p.id == _opp.id)>>
-<<=_opp.label>><br>
-<<if !_alreadyPlanned and $timeBucket < 1.0>>
-<<link "Commit to this">>
-  <<set $bujoPlans.push(_opp)>>
-  <<set $timeBucket += _opp.timeCost>>
-  <<goto "BuJo_Regular">>
-  <<if $timeBucket >= 1.0>>
-    <<set $advance=true>>
-  <</if>>
-<</link>>
-<</if>>
+  <<for _opp range $bujoOpportunities>>
+    <<set _alreadyPlanned = $bujoPlans.some(p => p.id == _opp.id)>>
+    <<=_opp.label>><br>
 
-<</for>>
-
+    <<if !_alreadyPlanned and $provisionalTime < 1.0>>
+      <<link "Commit to this">>
+        <<run setup.commitPlan(_opp)>>
+      <</link>>
+    <</if>>
+  <</for>>
 <</if>>
 
 
 
 :: BujoPlans {"position":"1100,700","size":"100,100"}
-<<if $application_state == "">><p><em>A brand new Bullet Journal. So much potential in these pages!</em></p><</if>>
-<<if $changedmind>><p><em>You have erased some plans carefully. Only a forensics expert could see your previous spread.</em></p><</if>>
-<<if $application_state == "ft">><p><em>Your BuJo is jacked to the brim with goals and targets. GET A JOB you have underlined five times.</em></p><</if>>
-<<if $application_state == "pt">><p><em>You’ve drawn out a little calendar spread to track your applications.</em></p><</if>>
-<<if $application_state == "vpt">><p><em>You have written "Apply for a job every week" and drawn a picture of you typing on a laptop giving a thumbs up.</em></p><</if>>
-<<if $application_state == "nope">><p><em>You have written Goals: Survive and drawn a little doodle of Katniss Everdeen 🏹</em></p>
-<</if>>
+<p><em><<print setup.getBujoIntro($application_state, $changedmind)>></em></p>
+
 <<if $bujoPlans.length > 0>>
 <h3> Month Events:-</h3>
   <<for _plan range $bujoPlans>>
@@ -221,14 +210,17 @@ Write invitations down 📝 then choose 🌱.
   {label: "One a week", id: "vpt", time: 0.1, luck: 0.2, text: "I'll make a plan in the BuJo"},
   {label: "Not this month", id: "nope", time: 0, luck: 0.5, text: "Gonna write that down in the BuJo"}
 ]>>
-
 <p>How many job applications will you send out?</p>
 
 <<set _i = 0>>
 <<for _opt range _jobOptions>>
-  [[<<=_opt.label>>->JobConfirm][$jobPickIndex = <<=_i>>]]
+  <<link _opt.label>>
+    <<set $jobPickIndex = _i>>
+    <<goto "JobConfirm">>
+  <</link>><br>
   <<set _i += 1>>
 <</for>>
+
 
 
 
@@ -376,6 +368,14 @@ Let's see what's going on outside in the real world.
 <<set $bujoPlans = []>>
 <<set $timeBucket = 0>>
 
+<<set $jobOptions = [
+  {label: "More than one a day", id: "ft", time: 0.7, luck: 0, text: "Alright, let's update the old BuJo"},
+  {label: "A couple a week", id: "pt", time: 0.3, luck: 0.2, text: "I'll block off some time in the BuJo"},
+  {label: "One a week", id: "vpt", time: 0.1, luck: 0.2, text: "I'll make a plan in the BuJo"},
+  {label: "Not this month", id: "nope", time: 0, luck: 0.5, text: "Gonna write that down in the BuJo"}
+]>>
+
+
 <<set $allOpportunities = [
 
   {
@@ -515,6 +515,63 @@ body: "Hej {{playername}}, velkom til Danmark! Vi kan tilbyde dig en sprogtest o
 
 
 :: StoryScript [script]
+// Job Board Planning
+setup.getBujoIntro = function(state, changedmind) {
+  if (changedmind) {
+    return "You have erased some plans carefully. Only a forensics expert could see your previous spread.";
+  }
+
+  switch (state) {
+    case "ft":
+      return "Your BuJo is jacked to the brim with goals and targets. GET A JOB you have underlined five times.";
+    case "pt":
+      return "You’ve drawn out a little calendar spread to track your applications.";
+    case "vpt":
+      return 'You have written "Apply for a job every week" and drawn a picture of you typing on a laptop giving a thumbs up.';
+    case "nope":
+      return 'You have written Goals: Survive and drawn a little doodle of Katniss Everdeen 🏹';
+    case "":
+    default:
+      return "A brand new Bullet Journal. So much potential in these pages!";
+  }
+};
+
+
+
+// Opportunities
+setup.commitPlan = function(opp) {
+  const v = State.variables;
+  if (!v.bujoPlans) v.bujoPlans = [];
+
+  const alreadyPlanned = v.bujoPlans.some(p => p.id === opp.id);
+  const bucket = v.provisionalTime || 0;
+
+  if (!alreadyPlanned && bucket + opp.timeCost <= 1.0) {
+    v.bujoPlans.push(opp);
+    setup.useTime(opp.id, opp.timeCost);
+
+    if (bucket + opp.timeCost >= 1.0) {
+      v.advance = true;
+    }
+
+    Engine.play("BuJo_Regular");
+  }
+};
+
+
+// Time Bucket
+
+setup.useTime = function(id, time) {
+  const v = State.variables;
+  v.timeLog = v.timeLog || {};
+
+  if (!v.timeLog[id]) {
+    v.timeLog[id] = time;
+    v.provisionalTime = (v.provisionalTime || 0) + time;
+  }
+};
+
+
 // Reset Month Helper
 setup.resetMonth = function () {
   State.variables.month += 1;

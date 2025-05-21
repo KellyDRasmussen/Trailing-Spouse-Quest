@@ -1,3 +1,60 @@
+// Job Board Planning
+setup.getBujoIntro = function(state, changedmind) {
+  if (changedmind) {
+    return "You have erased some plans carefully. Only a forensics expert could see your previous spread.";
+  }
+
+  switch (state) {
+    case "ft":
+      return "Your BuJo is jacked to the brim with goals and targets. GET A JOB you have underlined five times.";
+    case "pt":
+      return "You’ve drawn out a little calendar spread to track your applications.";
+    case "vpt":
+      return 'You have written "Apply for a job every week" and drawn a picture of you typing on a laptop giving a thumbs up.';
+    case "nope":
+      return 'You have written Goals: Survive and drawn a little doodle of Katniss Everdeen 🏹';
+    case "":
+    default:
+      return "A brand new Bullet Journal. So much potential in these pages!";
+  }
+};
+
+
+
+// Opportunities
+setup.commitPlan = function(opp) {
+  const v = State.variables;
+  if (!v.bujoPlans) v.bujoPlans = [];
+
+  const alreadyPlanned = v.bujoPlans.some(p => p.id === opp.id);
+  const bucket = v.provisionalTime || 0;
+
+  if (!alreadyPlanned && bucket + opp.timeCost <= 1.0) {
+    v.bujoPlans.push(opp);
+    setup.useTime(opp.id, opp.timeCost);
+
+    if (bucket + opp.timeCost >= 1.0) {
+      v.advance = true;
+    }
+
+    Engine.play("BuJo_Regular");
+  }
+};
+
+
+// Time Bucket
+
+setup.useTime = function(id, time) {
+  const v = State.variables;
+  v.timeLog = v.timeLog || {};
+
+  if (!v.timeLog[id]) {
+    v.timeLog[id] = time;
+    v.provisionalTime = (v.provisionalTime || 0) + time;
+  }
+};
+
+
 // Reset Month Helper
 setup.resetMonth = function () {
   State.variables.month += 1;
