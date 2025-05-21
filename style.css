@@ -1,5 +1,5 @@
 .chat-bubble {
-  background-color: #8CA0B0;
+  background-color: #E8EEF4;
   color: #000000;
   border-radius: 16px;
   padding: 10px 14px;
@@ -14,50 +14,52 @@
   display: block;
   font-weight: 600;
   margin-bottom: 4px;
-  color: #333;
+  color: #000000;
 }
 
 .message-card {
-  border: 1px solid #ccc;
+  border: 1px solid #aaa;
   padding: 1em;
   margin: 1em 0;
   border-radius: 5px;
   font-family: system-ui, sans-serif;
-    color: #000000;
+  color: #000000;
+  background-color: #ffffff;
 }
 
 .email {
   background-color: #f9f9ff;
-  border-left: 4px solid #5555cc;
+  border-left: 4px solid #3333aa;
   color: #000000;
 }
 
 .social {
-  background-color: #f0fdf0;
-  border-left: 4px solid #44aa44;
+  background-color: #f0fff0;
+  border-left: 4px solid #228822;
   color: #000000;
 }
 
 .email-header {
   font-size: 0.9em;
-  color: #333;
+  color: #000000;
   margin-bottom: 0.5em;
 }
 
 .social-post {
   font-weight: bold;
   margin-bottom: 0.5em;
+  color: #000000;
 }
 
 .message-body {
   white-space: pre-wrap;
-    color: #000000;
+  color: #000000;
 }
 
 .insta-post {
   background-color: #fff;
   color: #000000;
-  border: 1px solid #ddd;
+  border: 1px solid #aaa;
   border-radius: 12px;
   padding: 12px;
   margin: 16px 0;
@@ -69,7 +71,7 @@
 .insta-author {
   font-weight: bold;
   margin-bottom: 8px;
-  color: #333;
+  color: #000000;
 }
 
 .insta-image {
@@ -81,12 +83,12 @@
 .insta-caption {
   font-size: 0.95em;
   line-height: 1.4;
-  color: #444;
+  color: #000000;
 }
 
 .bujo-page {
-  background: #fdfdfd;
-  border: 1px solid #ddd;
+  background: #ffffff;
+  border: 1px solid #aaa;
   padding: 1.2em;
   margin: 2em 0;
   border-radius: 10px;
@@ -97,18 +99,21 @@
   font-family: 'Georgia', serif;
   font-size: 1.4em;
   margin-bottom: 0.5em;
+  color: #000000;
 }
 
 .bujo-meta {
   font-weight: bold;
   margin-top: 1em;
+  color: #000000;
 }
 
 .bujo-reflections {
   margin-top: 1em;
   font-style: italic;
-  color: #444;
+  color: #000000;
 }
+
 /* Fade-in animation */
 @keyframes fadeInUp {
   0% {
@@ -133,16 +138,125 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  color: #000000;
 }
 
 .social-post {
   font-weight: bold;
   margin-bottom: 0.25em;
-  color: #555;
+  color: #000000;
 }
 
 .message-body {
   font-size: 0.95em;
-  color: #333;
+  color: #000000;
   line-height: 1.4;
+}
+
+/* Time management UI styles */
+.time-meter {
+  margin: 1em 0;
+  padding: 0.5em;
+  background: #f9f9f9;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+}
+
+.time-label {
+  font-size: 0.9em;
+  margin-bottom: 0.3em;
+  color: #000000;
+}
+
+.time-bar {
+  height: 12px;
+  background: #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.time-filled {
+  height: 100%;
+  background: linear-gradient(to right, #1a8a1f, #e6ac00);
+  transition: width 0.3s ease;
+}
+
+.time-alert {
+  margin: 1em 0;
+  padding: 1em;
+  background: #fff8e1;
+  border-left: 4px solid #e6ac00;
+  border-radius: 3px;
+  color: #000000;
+}
+
+.plan-item {
+  padding: 0.5em;
+  margin: 0.5em 0;
+  background: #f5f5f5;
+  border-radius: 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #000000;
+}
+
+.plan-item a {
+  color: #c62828;
+  font-weight: bold;
+  padding: 0 0.5em;
+}
+
+.reflection-entry {
+  padding: 0.8em;
+  margin: 0.8em 0;
+  background: #f9f9f9;
+  border-left: 3px solid #673ab7;
+  font-family: 'Caveat', cursive;
+  font-size: 1.1em;
+  line-height: 1.4;
+  color: #000000;
+}
+
+/* Opportunity styles */
+.opportunity-item {
+  margin: 1em 0;
+  padding: 1em;
+  background: #f5f5f5;
+  border-radius: 5px;
+  border-left: 3px solid #1a8a1f;
+  color: #000000;
+}
+
+.opportunity-item strong {
+  display: block;
+  margin-bottom: 0.5em;
+  color: #000000;
+}
+
+.time-cost {
+  font-size: 0.9em;
+  color: #000000;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.already-planned {
+  display: inline-block;
+  padding: 0.3em 0.6em;
+  background: #e8f5e9;
+  color: #1b5e20;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.too-busy {
+  display: inline-block;
+  padding: 0.3em 0.6em;
+  background: #ffebee;
+  color: #b71c1c;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: bold;
 }
